@@ -1,20 +1,29 @@
 #include "deploy.h"
 #include "lib_io.h"
 #include "lib_time.h"
+#include "min_cost_flow.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
 #include <string>
+#include <regex>
+#include <iostream>
 
 void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const filename)
 {
-	//assert(inLineNum < MAX_IN_NUM);
+	/*
+	* 构建基本数据结构
+	*/
+	std::smatch m0;
+	std::string strLine0(*inLines);
+	std::regex_match(strLine0, m0, std::regex("(\\d+)\\s(\\d+)\\s(\\d+)[.\\n\\r]*"));
+	int netNodeNum = atoi(m0.str(1).c_str()); // 网络节点数量
+	int netEdgeNum = atoi(m0.str(2).c_str()); // 网络链路数量
+	int consumerNodeNum = atoi(m0.str(3).c_str()); // 消费节点数量	
+	int serverCost = atoi(*(inLines + 2));
 
-	printf("line count %d\n", inLineNum);
-	for (int i = 0; i < inLineNum; ++i)
-	{
-		printf("line %d=%s\n", i, inLines[i]);
-	}
+
+	std::cout << serverCost;
 
 	std::string res;
 	res.append("4");
@@ -25,4 +34,7 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 	res.append("204 203 202 102 12 40").append("\n");
 
 	write_result(res.c_str(), filename);
+	system("pause");
 }
+
+

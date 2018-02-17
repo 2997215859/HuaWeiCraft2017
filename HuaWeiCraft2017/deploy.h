@@ -6,7 +6,6 @@
 extern "C" {
 #endif
 	void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const filename);
-
 #ifdef __cplusplus
 }
 #endif
