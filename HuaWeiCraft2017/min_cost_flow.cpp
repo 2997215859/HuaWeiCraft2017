@@ -1,5 +1,6 @@
 #include "min_cost_flow.h"
 #include <queue>
+#include <climits>
 /*
 * 假设图中不存在负权和环，SPFA算法找到最短路径
 * 最短路径指的是，从源点s到终点t所经过边的cost之和最小的路径
@@ -38,5 +39,24 @@ bool MinCostFlow::spfa(int s, int t) {
 			return false;
 		}
 		return true;
+	}
+}
+
+int MinCostFlow::min_cost_flow(int s, int t) {
+	int cost = 0;
+	int flow = 0;
+	while (spfa(s, t)) {
+		int f = INFINITY;
+		for (int u = t; u != s; u = gPre[u]) {
+			if (gEdges[gPath[u]].vol < f) {
+				f = gEdges[gPath[u]].vol;
+			}
+		}
+		flow += f;
+		cost += gDist[t] * f;
+		for (int u = t; u != s; u = gPre[u]) {
+			gEdges[gPath[u]].vol -= f; // 正向边容量减少
+			gEdges[gPath[u]^1].vol += f; // 反向边容量增加
+		}
 	}
 }
