@@ -22,7 +22,12 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 	int consumerNodeNum = atoi(m0.str(3).c_str()); // 消费节点数量	
 	int serverCost = atoi(*(inLines + 2));
 
-
+	int edgeInfoNoStart = 4;
+	
+	MinCostFlow minCostFlow(netNodeNum, netEdgeNum, consumerNodeNum);
+	for (int lineCount = edgeInfoNoStart; lineCount <= edgeInfoNoStart + netEdgeNum; lineCount++) {
+		minCostFlow.insert_edge();
+	}
 	std::cout << serverCost;
 
 	std::string res;

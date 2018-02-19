@@ -24,6 +24,9 @@
     <ClCompile Include="deploy.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="min_cost_flow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deploy.h">
@@ -33,6 +36,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="lib_time.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="min_cost_flow.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="edge.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

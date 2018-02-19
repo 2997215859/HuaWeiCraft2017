@@ -5,6 +5,15 @@
 * 假设图中不存在负权和环，SPFA算法找到最短路径
 * 最短路径指的是，从源点s到终点t所经过边的cost之和最小的路径
 */
+MinCostFlow::MinCostFlow(int netNodeNum, int netEdgeNum, int consumerNodeNum) :
+	netNodeNum(netNodeNum),
+	netEdgeNum(netEdgeNum),
+	consumerNodeNum(consumerNodeNum),
+	gHead(netNodeNum, -1),
+	gPre(netNodeNum, -1),
+	gPath(netNodeNum, -1),
+	gDist(netNodeNum, -1) {}
+
 void MinCostFlow::insert_edge(int u, int v, int vol, int cost) {
 	Edge e = {v, vol, cost, gHead[u]};
 	gEdges.push_back(e);
@@ -15,8 +24,9 @@ void MinCostFlow::insert_edge(int u, int v, int vol, int cost) {
 	gHead[v] = gEdgeCount++;
 }
 bool MinCostFlow::spfa(int s, int t) {
-	gDist = new vector<int>(MAX_NODE_NUM, -1);
-	gPre = new vector<int>(MAX_NODE_NUM, -1);
+	gDist = std::vector<int>(MAX_NODE_NUM, -1);
+	gPre = std::vector<int>(MAX_NODE_NUM, -1);
+	gDist[s] = 0;
 	std::queue<int> q;
 	q.push(s);
 	while (!q.empty()) {

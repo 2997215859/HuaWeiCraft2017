@@ -113,11 +113,14 @@
     <ClCompile Include="cdn.cpp" />
     <ClCompile Include="deploy.cpp" />
     <ClCompile Include="io.cpp" />
+    <ClCompile Include="min_cost_flow.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deploy.h" />
+    <ClInclude Include="edge.h" />
     <ClInclude Include="lib_io.h" />
     <ClInclude Include="lib_time.h" />
+    <ClInclude Include="min_cost_flow.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
