@@ -6,20 +6,17 @@
 * 最短路径指的是，从源点s到终点t所经过边的cost之和最小的路径
 */
 void MinCostFlow::insert_edge(int u, int v, int vol, int cost) {
-	gEdges[gEdgeCount].to = v;
-	gEdges[gEdgeCount].vol = vol;
-	gEdges[gEdgeCount].cost = cost;
-	gEdges[gEdgeCount].next = gHead[u];
+	Edge e = {v, vol, cost, gHead[u]};
+	gEdges.push_back(e);
 	gHead[u] = gEdgeCount++;
 
-	gEdges[gEdgeCount].to = v;
-	gEdges[gEdgeCount].vol = 0;
-	gEdges[gEdgeCount].cost = -cost;
-	gEdges[gEdgeCount].next = gHead[v];
+	Edge reverseE = {v, 0, -cost, gHead[u]};
+	gEdges.push_back(reverseE);
 	gHead[v] = gEdgeCount++;
 }
 bool MinCostFlow::spfa(int s, int t) {
-	gDist[s] = 0;
+	gDist = new vector<int>(MAX_NODE_NUM, -1);
+	gPre = new vector<int>(MAX_NODE_NUM, -1);
 	std::queue<int> q;
 	q.push(s);
 	while (!q.empty()) {
