@@ -24,6 +24,7 @@ class MinCostFlow {
 	
 public:
 	MinCostFlow(int netNodeNum, int netEdgeNum, int consumerNodeNum);
+	MinCostFlow(MinCostFlow &m);
 	void insert_edge(int u, int v, int vol, int cost);
 	bool spfa(int s, int t);
 	int min_cost_flow(int s, int t);

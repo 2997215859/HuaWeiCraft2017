@@ -14,6 +14,8 @@ MinCostFlow::MinCostFlow(int netNodeNum, int netEdgeNum, int consumerNodeNum) :
 	gPath(netNodeNum, -1),
 	gDist(netNodeNum, -1) {}
 
+MinCostFlow::MinCostFlow(MinCostFlow & m) = default;
+
 void MinCostFlow::insert_edge(int u, int v, int vol, int cost) {
 	Edge e = {v, vol, cost, gHead[u]};
 	gEdges.push_back(e);
