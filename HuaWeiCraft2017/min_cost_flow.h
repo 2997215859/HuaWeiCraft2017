@@ -8,7 +8,9 @@
 
 class MinCostFlow {
 	
-	int netNodeNum, netEdgeNum, consumerNodeNum;
+	int netNodeNum;
+	int netEdgeNum;
+	int consumerNodeNum;
 
 	int gEdgeCount;
 
@@ -20,7 +22,7 @@ class MinCostFlow {
 	std::vector<int> gDist;
 
 	
-
+public:
 	MinCostFlow(int netNodeNum, int netEdgeNum, int consumerNodeNum);
 	void insert_edge(int u, int v, int vol, int cost);
 	bool spfa(int s, int t);
