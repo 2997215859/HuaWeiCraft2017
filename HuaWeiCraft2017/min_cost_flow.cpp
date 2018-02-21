@@ -68,4 +68,9 @@ int MinCostFlow::min_cost_flow(int s, int t) {
 			gEdges[gPath[u]^1].vol += f; // 反向边容量增加
 		}
 	}
+	return cost;
+}
+
+int MinCostFlow::min_cost_flow() {
+	return min_cost_flow(netNodeNum + 1, netNodeNum);
 }

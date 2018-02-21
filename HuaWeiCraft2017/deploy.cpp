@@ -40,7 +40,8 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 		minCostFlow.insert_edge(v, u, vol, cost);
 	}
 	
-	// 超级汇点连到所有汇点的边的费用和容量分别为0和消费节点带宽所需的消耗
+	// 超级汇点连到所有汇点的边的费用和容量分别为0和消费节点带宽所需的消耗/
+	// 超级汇点编号为netNodeNum
 	std::smatch m2; // 用于匹配出 消费节点id 相连节点id 视频带宽需求
 	for (int lineCount = consumerInfoNoStart; lineCount <= consumerInfoNoStart + consumerNodeNum - 1; lineCount++) {
 		std::string  strLine(*(inLines + lineCount));
@@ -52,9 +53,15 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 		minCostFlow.insert_edge(netNodeNum, consumerLinkId, demand, 0);
 	}
 
-	std::vector<int> serverLinkIds; // 先用serverLinkId来存储server放置的网络id
+	// 这里开始计算启发式算法
+	// 1. 预设方案：模拟退火
+	// 1.1 选取初始点
+    // 1.2 迭代算法
+	// 1.3 判断比较
 
+	std::vector<int> serverLinkIds; // 先用serverLinkId来存储server放置的网络id
 	// 超级源点连接到所有源点的边的费用和容量分别设为0和无穷大
+	// 超级源点编号为 netNodeNum + 1
 	MinCostFlow minCostFlowCopy = minCostFlow; // 先拷贝构造一个对象，再去插入源点
 	// 向minCostFlow中的拓扑图插入超级源点到所有源点的边
 	for (auto serverLinkId: serverLinkIds) {
@@ -62,8 +69,9 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 		minCostFlow.insert_edge(serverLinkId, netNodeNum + 1, INFINITY, 0);
 	}
 	
-	
-	
+	// 所有边插入之后，开始跑最小费用流，计算出最小费用流
+	// 从超级源点到超级汇点计算最小费用流
+	int ans = minCostFlow.min_cost_flow(netNodeNum + 1, netNodeNum);
 
 	std::string res;
 	res.append("4");

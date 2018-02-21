@@ -28,6 +28,7 @@ public:
 	void insert_edge(int u, int v, int vol, int cost);
 	bool spfa(int s, int t);
 	int min_cost_flow(int s, int t);
+	int min_cost_flow();
 };
 
 #endif // MIN_COST_FLOW_H
