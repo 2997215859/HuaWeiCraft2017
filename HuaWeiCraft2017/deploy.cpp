@@ -48,12 +48,21 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 		int consumerId = atoi(m2.str(1).c_str()); // 消费节点id
 		int consumerLinkId = atoi(m2.str(2).c_str()); // 相连节点id
 		int demand = atoi(m2.str(3).c_str()); // 视频带宽需求
-		minCostFlow.insert_edge(consumerLinkId, netNodeNum + 1, demand, 0);
-		minCostFlow.insert_edge(netNodeNum + 1, consumerLinkId, demand, 0);
+		minCostFlow.insert_edge(consumerLinkId, netNodeNum, demand, 0);
+		minCostFlow.insert_edge(netNodeNum, consumerLinkId, demand, 0);
 	}
+
+	std::vector<int> serverLinkIds; // 先用serverLinkId来存储server放置的网络id
 
 	// 超级源点连接到所有源点的边的费用和容量分别设为0和无穷大
 	MinCostFlow minCostFlowCopy = minCostFlow; // 先拷贝构造一个对象，再去插入源点
+	// 向minCostFlow中的拓扑图插入超级源点到所有源点的边
+	for (auto serverLinkId: serverLinkIds) {
+		minCostFlow.insert_edge(netNodeNum+1, serverLinkId, INFINITY, 0);
+		minCostFlow.insert_edge(serverLinkId, netNodeNum + 1, INFINITY, 0);
+	}
+	
+	
 	
 
 	std::string res;
