@@ -3,6 +3,7 @@
 
 #pragma once
 struct Edge {
+	int from;
 	int to;
 	int vol;
 	int cost;
