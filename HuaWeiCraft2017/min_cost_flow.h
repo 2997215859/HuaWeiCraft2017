@@ -11,6 +11,7 @@ class MinCostFlow {
 	int netNodeNum;
 	int netEdgeNum;
 	int consumerNodeNum;
+	int serverCost;
 
 	int gEdgeCount;
 
@@ -21,14 +22,17 @@ class MinCostFlow {
 	std::vector<int> gPath;
 	std::vector<int> gDist;
 
-	
-public:
-	MinCostFlow(int netNodeNum, int netEdgeNum, int consumerNodeNum);
-	MinCostFlow(MinCostFlow &m);
-	void insert_edge(int u, int v, int vol, int cost);
-	bool spfa(int s, int t);
 	int min_cost_flow(int s, int t);
 	int min_cost_flow();
+	
+public:
+	MinCostFlow(int netNodeNum, int netEdgeNum, int consumerNodeNum, int serverCost);
+	MinCostFlow(MinCostFlow &m);
+	void insert_edge(int u, int v, int vol, int cost);
+	void insert_server(std::vector<int> serverLinkedIds);
+	bool spfa(int s, int t);
+	
+	int min_cost(std::vector<int> serverLinkIds); // 加上服务器之后的总共花费
 };
 
 #endif // MIN_COST_FLOW_H

@@ -2,6 +2,7 @@
 #include "lib_io.h"
 #include "lib_time.h"
 #include "min_cost_flow.h"
+#include "saa.h"
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
@@ -24,7 +25,7 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 
 	
 
-	MinCostFlow minCostFlow(netNodeNum, netEdgeNum, consumerNodeNum); // 初始化网络流
+	MinCostFlow minCostFlow(netNodeNum, netEdgeNum, consumerNodeNum, serverCost); // 初始化网络流
 	int edgeInfoNoStart = 4; // 链路信息起始行编号（从0开始计数）
 	int consumerInfoNoStart = edgeInfoNoStart + netEdgeNum + 1;
 	
@@ -59,19 +60,10 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
     // 1.2 迭代算法
 	// 1.3 判断比较
 
-	std::vector<int> serverLinkIds; // 先用serverLinkId来存储server放置的网络id
-	// 超级源点连接到所有源点的边的费用和容量分别设为0和无穷大
-	// 超级源点编号为 netNodeNum + 1
-	MinCostFlow minCostFlowCopy = minCostFlow; // 先拷贝构造一个对象，再去插入源点
-	// 向minCostFlow中的拓扑图插入超级源点到所有源点的边
-	for (auto serverLinkId: serverLinkIds) {
-		minCostFlow.insert_edge(netNodeNum+1, serverLinkId, INFINITY, 0);
-		minCostFlow.insert_edge(serverLinkId, netNodeNum + 1, INFINITY, 0);
-	}
 	
-	// 所有边插入之后，开始跑最小费用流，计算出最小费用流
-	// 从超级源点到超级汇点计算最小费用流
-	int ans = minCostFlow.min_cost_flow(netNodeNum + 1, netNodeNum);
+	SAA saa;
+	saa.saa(2000, minCostFlow, serverLinkIds);
+
 
 	std::string res;
 	res.append("4");

@@ -5,10 +5,11 @@
 * 假设图中不存在负权和环，SPFA算法找到最短路径
 * 最短路径指的是，从源点s到终点t所经过边的cost之和最小的路径
 */
-MinCostFlow::MinCostFlow(int netNodeNum, int netEdgeNum, int consumerNodeNum) :
+MinCostFlow::MinCostFlow(int netNodeNum, int netEdgeNum, int consumerNodeNum, int serverCost) :
 	netNodeNum(netNodeNum),
 	netEdgeNum(netEdgeNum),
 	consumerNodeNum(consumerNodeNum),
+	serverCost(serverCost),
 	gHead(netNodeNum, -1),
 	gPre(netNodeNum, -1),
 	gPath(netNodeNum, -1),
@@ -25,6 +26,7 @@ void MinCostFlow::insert_edge(int u, int v, int vol, int cost) {
 	gEdges.push_back(reverseE);
 	gHead[v] = gEdgeCount++;
 }
+
 bool MinCostFlow::spfa(int s, int t) {
 	gDist = std::vector<int>(MAX_NODE_NUM, -1);
 	gPre = std::vector<int>(MAX_NODE_NUM, -1);
@@ -74,3 +76,21 @@ int MinCostFlow::min_cost_flow(int s, int t) {
 int MinCostFlow::min_cost_flow() {
 	return min_cost_flow(netNodeNum + 1, netNodeNum);
 }
+
+int MinCostFlow::min_cost(std::vector<int> serverLinkIds) {
+	insert_server(serverLinkIds);
+	return min_cost_flow() + serverCost;
+}
+
+void MinCostFlow::insert_server(std::vector<int> serverLinkIds) {
+	// 超级源点连接到所有源点的边的费用和容量分别设为0和无穷大
+	// 超级源点编号为 netNodeNum + 1
+
+    // 向minCostFlow中的拓扑图插入超级源点到所有源点的边
+	for (auto serverLinkId : serverLinkIds) {
+		insert_edge(netNodeNum + 1, serverLinkId, INFINITY, 0);
+		insert_edge(serverLinkId, netNodeNum + 1, INFINITY, 0);
+	}
+
+}
+
