@@ -1,29 +1,52 @@
 #include "saa.h"
+#include "random.h"
+#include "gene.h"
 #include <ctime>
 double SAA::rnd(double dbLow, double dbUpper){
 	double dbTemp = rand() / ((double)RAND_MAX + 1.0);
 	return dbLow + dbTemp*(dbUpper - dbLow);
 }
-void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkIds) {
-	int i;
-	double T = tInit;
-	MinCostFlow minCostFlowBest = minCostFlow; // 拷贝构造一个新的作为坠吼的拓补图
-	while (T > tMin) {
-		for (int i = 0; i < num; i++) {
-			time_t tm;
-			srand((unsigned int)time(&tm));  // 初始化随机数种子 
-			// 产生新的服务器节点,然后放入最小费用流对象中去计算出最小费用
-			std::vector<int> currentServerLinkIds; // to do
+void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
+	double T = 20.0;double poi = 0.05;double delta = 0.999;
+	int geneNum = 26; double crossP = 0.95; double mutation = 0.15;
+	
+	// 初始化种群
+	std::vector<Gene> genes;
+	genes.push_back(Gene(minCostFlow.get_net_node_num(), serverLinkedIds));
+	for (int i = 1; i <= geneNum; i++) {
+		genes.push_back(Gene(minCostFlow.get_net_node_num()));
+	}
+
+	// 退火算法
+	while (T > 0.1) {
+		// 对每条染色体进行邻域选择
+		// 如果邻域解更优，则保留，否则一定概率接收
+		// 如果本就无解，则适度函数无穷大，设为一个很大的值
+		for (auto gene: genes) {
+			if (gene.none()) continue; // 空染色体不进行领域操作
 			MinCostFlow currentMinCostFlow = minCostFlow;
-			double dE = currentMinCostFlow.min_cost(currentServerLinkIds) - minCostFlowBest.min_cost(serverLinkIds);
-			if (dE < 0) { // 移动后得到更好的解，接收移动
-				minCostFlowBest = currentMinCostFlow;
-			} else if (exp(-dE / (T*k)) > rnd(0.0, 1.0)) {
-				// 以一个概率来拒绝或接受它，而这个拒绝的概率会随着温度的降低（也即是迭代次数的增加）而变大（也就是接受的概率会越来越小）
-				// 函数exp( dE/T )的取值范围是(0,1) ，dE/T越大，则exp( dE/T )也越大  
-				minCostFlowBest = currentMinCostFlow;
+			std::vector<int> currentServerLinkedIds = gene.get_server_linked_ids();
+			// 记录该染色体的费用
+			int currentCost = currentMinCostFlow.min_cost(currentServerLinkedIds);		
+
+			// 开始计算邻域
+			// 任意选择服务器中的一个，并任意选择其相邻节点中的一个节点
+			// 从currentMinCostFlow中找到			
+			int index = Random::rnd(0, currentServerLinkedIds.size()-1);
+			// 依靠minCostFlow中的拓扑结构，任意挑选该服务器点周围的一个点作为新的服务器点，原服务器点舍弃
+			int newServerId = minCostFlow.selectRandAdjacent(currentServerLinkedIds[index]);
+			
+			// 替换原来的服务器节点
+			std::vector<int> newServerLinkedIds = currentServerLinkedIds;
+			newServerLinkedIds[index] = newServerId;
+
+			// 概率性的随机增加任意节点为服务器节点
+			if (Random::random_double(0, 1) < poi) {
+				newServerLinkedIds.push_back(Random::random_int(0, minCostFlow.get_net_node_num));
 			}
+			// 计算邻域完毕！
+			MinCostFlow adjacentMinCostFlow = minCostFlow;
+			
 		}
-		T = r * T; //降温退火 ，0<r<1 。r越大，降温越慢；r越小，降温越快  
 	}
 }

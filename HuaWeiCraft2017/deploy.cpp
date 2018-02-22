@@ -3,6 +3,7 @@
 #include "lib_time.h"
 #include "min_cost_flow.h"
 #include "saa.h"
+#include <bitset>
 #include <cstdio>
 #include <cstdlib>
 #include <cassert>
@@ -43,6 +44,7 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 	
 	// 超级汇点连到所有汇点的边的费用和容量分别为0和消费节点带宽所需的消耗/
 	// 超级汇点编号为netNodeNum
+	std::bitset<10000 + 5> serverLinkIdsInit(0); // 初始服务器位置
 	std::smatch m2; // 用于匹配出 消费节点id 相连节点id 视频带宽需求
 	for (int lineCount = consumerInfoNoStart; lineCount <= consumerInfoNoStart + consumerNodeNum - 1; lineCount++) {
 		std::string  strLine(*(inLines + lineCount));
@@ -52,6 +54,8 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 		int demand = atoi(m2.str(3).c_str()); // 视频带宽需求
 		minCostFlow.insert_edge(consumerLinkId, netNodeNum, demand, 0);
 		minCostFlow.insert_edge(netNodeNum, consumerLinkId, demand, 0);
+
+		serverLinkIdsInit.set(consumerLinkId); // 初始服务器位置
 	}
 
 	// 这里开始计算启发式算法
@@ -62,7 +66,7 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 
 	
 	SAA saa;
-	saa.saa(2000, minCostFlow, serverLinkIds);
+	saa.saa(minCostFlow, serverLinkIds);
 
 
 	std::string res;

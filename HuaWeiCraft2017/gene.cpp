@@ -2,7 +2,13 @@
 #include "random.h"
 #include <ctime>
 
-Gene::Gene(int len) : len(len) {}
+Gene::Gene(int len) : len(len) {
+	randomInit();
+}
+Gene::Gene(int len, std::vector<int> serverLinkedIds) {
+	len = serverLinkedIds.size();
+	Gene::set(serverLinkedIds);
+}
 void Gene::randomInit() {
 	for (int i = 0; i < len; i++) {
 		code[i] = Random::random_int(0, 1);
@@ -10,7 +16,6 @@ void Gene::randomInit() {
 }
 void Gene::randomInit(int len) {
 	len = len;
-	p = fitness = 0;
 	Gene::randomInit();
 }
 void Gene::operator*(Gene &b) { // 交叉，同时改变2条染色体
@@ -38,20 +43,25 @@ bool Gene::operator==(const Gene &b) const { // 判断序列是否相等
 	return code == b.code;
 }
 
-inline void Gene::mutation(int loc = -1) { // 突变，[0, len)
+void Gene::mutation(int loc = -1) { // 突变，[0, len)
 	if (loc == -1) loc = Random::random_int(0, len - 1);
 	else if (loc >= len) return;
 	// printf("loc = %d\n", loc);
 	code[loc] = !code[loc];
 }
 
-std::unordered_set<int> Gene::get_server_linked_ids() const {
-	std::unordered_set<int> serverLinkedIds;
+std::vector<int> Gene::get_server_linked_ids() const {
+	std::vector<int> serverLinkedIds;
 	for (int i = 0; i < len; ++i)
-		if (code[i]) serverLinkedIds.insert(i);
+		if (code[i]) serverLinkedIds.push_back(i);
 	return serverLinkedIds;
 }
-
+void Gene::set(std::vector<int> serverLinkedIds) {
+	code.reset();
+	for (auto i: serverLinkedIds) {
+		code.set(i);
+	}
+}
 bool Gene::getBit(int loc) {
 	return code[loc];
 }

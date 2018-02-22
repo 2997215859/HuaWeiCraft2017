@@ -1,6 +1,8 @@
 #ifndef SAA_H
 #define SAA_H
 #include "min_cost_flow.h"
+#include<bitset>
+
 class SAA {
 	double k = 0.1;
 	double r = 0.9; // 用于控制降温的快慢
@@ -8,7 +10,8 @@ class SAA {
 	double tMin = 20; // 温度的下限，若温度T达到tMin，则停止搜索
 	int num = 30000; // 迭代次数
 public:
-	void saa(MinCostFlow minCostFlow, std::vector<int> serverIds);
+	void saa(MinCostFlow minCostFlow, std::vector<int> serverLinkIds);
+	void saa(MinCostFlow minCostFlow, std::bitset<10000+5> serverLinkIds);
 	double rnd(double dbLow, double dbUpper);
 };
 

@@ -2,6 +2,7 @@
 #define GENE_H
 #include <bitset>
 #include <unordered_set>
+#include <vector>
 
 class Gene {
 private:
@@ -12,6 +13,7 @@ public:
 	double p; // 选中概率
 	
 	Gene(int len);
+	Gene(int len, std::vector<int> serverLinkedIds);
 	inline void randomInit();
 	inline void randomInit(int len);
 	void operator*(Gene &b);
@@ -21,7 +23,9 @@ public:
 	inline void Gene::mutation(int loc = -1);// 突变，[0, len)
 	inline bool getBit(int loc);
 	inline void setBit(int loc, bool x);
-
-	inline std::unordered_set<int> get_server_linked_ids() const;
+	inline void set(std::vector<int> serverLinkedIds);
+	inline bool none() { return code.none(); }
+	inline bool any() { return code.any(); }
+	inline std::vector<int> get_server_linked_ids() const;
 };
 #endif // !GENE_H
