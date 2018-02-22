@@ -1,4 +1,5 @@
 #include "min_cost_flow.h"
+#include "random.h"
 #include <queue>
 #include <climits>
 /*
@@ -17,14 +18,36 @@ MinCostFlow::MinCostFlow(int netNodeNum, int netEdgeNum, int consumerNodeNum, in
 
 MinCostFlow::MinCostFlow(MinCostFlow & m) = default;
 
+std::vector<int> MinCostFlow::selectAdjacent(int u) {
+	std::vector<int> adjacentIds;
+	for (int e = gHead[u]; e != -1; e = gEdges[e].next) {
+		adjacentIds.push_back(gEdges[e].to);
+	}
+	return adjacentIds;
+}
+
+int MinCostFlow::selectRandAdjacent(int u) {
+	std::vector<int> adjacentIds = selectAdjacent(u);
+	return adjacentIds[Random::rnd(0, adjacentIds.size()-1)];
+}
+
 void MinCostFlow::insert_edge(int u, int v, int vol, int cost) {
-	Edge e = {v, vol, cost, gHead[u]};
+	Edge e = {u, v, vol, cost, gHead[u]};
 	gEdges.push_back(e);
 	gHead[u] = gEdgeCount++;
 
-	Edge reverseE = {v, 0, -cost, gHead[u]};
+	Edge reverseE = {v, u, 0, -cost, gHead[v]};
 	gEdges.push_back(reverseE);
 	gHead[v] = gEdgeCount++;
+}
+
+void MinCostFlow::delete_super_source() {
+	int delete_num = serverLinkIds.size() * 4; // 需要删除这么多条边
+	for (int i = 0; i < delete_num;i++) { // 逐个恢复每个点所指向的边
+		gHead[gEdges.back().from] = gEdges.back().next;
+		gEdges.pop_back();
+	}
+	gEdgeCount -= delete_num; // 并恢复链路计数为加入超级源点之前的链路急速
 }
 
 bool MinCostFlow::spfa(int s, int t) {
@@ -77,12 +100,22 @@ int MinCostFlow::min_cost_flow() {
 	return min_cost_flow(netNodeNum + 1, netNodeNum);
 }
 
-int MinCostFlow::min_cost(std::vector<int> serverLinkIds) {
+int MinCostFlow::min_cost(const std::vector<int> &serverLinkIds) {
+	if (!serverLinkIds.empty()) {
+		// 先删除掉超级源点对应的边
+		// 注意，在构建拓扑图的时候，一定是在最后添加超级源点边，是为了方便删除
+		delete_super_source();
+	}
+	serverLinkIds = serverLinkIds;
 	insert_server(serverLinkIds);
 	return min_cost_flow() + serverCost;
 }
 
-void MinCostFlow::insert_server(std::vector<int> serverLinkIds) {
+int MinCostFlow::min_cost(Gene gene) {
+	return min_cost(gene.get_server_linked_ids());
+}
+
+void MinCostFlow::insert_server(const std::vector<int> &serverLinkIds) {
 	// 超级源点连接到所有源点的边的费用和容量分别设为0和无穷大
 	// 超级源点编号为 netNodeNum + 1
 
