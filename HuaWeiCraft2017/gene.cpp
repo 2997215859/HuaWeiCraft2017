@@ -3,10 +3,12 @@
 #include <ctime>
 
 Gene::Gene(int len) : len(len) {
+	fitness = p = 0;
 	randomInit();
 }
 Gene::Gene(int len, std::vector<int> serverLinkedIds) {
 	this->len = len;
+	fitness = p = 0;
 	Gene::set(serverLinkedIds);
 }
 void Gene::randomInit() {

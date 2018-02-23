@@ -8,7 +8,6 @@
 #include <vector>
 
 class MinCostFlow {
-	Random random;
 	int netNodeNum;
 	int netEdgeNum;
 	int consumerNodeNum;

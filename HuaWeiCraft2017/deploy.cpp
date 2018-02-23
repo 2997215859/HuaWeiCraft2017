@@ -77,7 +77,7 @@ void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const 
 	SAA saa;
 	
 	// serverLinkIdsInit = { 43,44,22,7,37,13,16,38,34 };
-	serverLinkIdsInit = { 7,37,15,13,22,43,38};
+	// serverLinkIdsInit = { 7,37,15,13,22,43,38};
 	saa.saa(minCostFlow, serverLinkIdsInit);
 
 

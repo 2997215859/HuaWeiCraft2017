@@ -1,6 +1,7 @@
 #include "saa.h"
 #include "random.h"
 #include "gene.h"
+#include <iostream>
 #include <ctime>
 #include <algorithm>
 double SAA::rnd(double dbLow, double dbUpper){
@@ -8,7 +9,7 @@ double SAA::rnd(double dbLow, double dbUpper){
 	return dbLow + dbTemp*(dbUpper - dbLow);
 }
 int SAA::select(const std::vector<Gene> &genes) {
-	double r = Random().random_double(0, 1);
+	double r = Random::random_double(0, 1);
 	double s = 0;
 	for (size_t i = 0; i < genes.size();i++) {
 		s += genes[i].get_p();
@@ -19,8 +20,9 @@ int SAA::select(const std::vector<Gene> &genes) {
 	return 0;
 }
 void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
-	double T = 20.0;double poi = 0.05;double delta = 0.999;
-	int geneNum = 26; double crossP = 0.95; double mutation = 0.15;
+
+	double T = 20;double poi = 0.01;double delta = 0.98;
+	int geneNum = 30; double crossP = 0.95; double mutation = 0.15;
 
 	printf("  初始温度=%f，增点概率=%f,退火速率=%f,种群大小=%d，交叉概率=%f,变异概率=%f", 
 		T, poi, delta, geneNum, crossP, mutation);
@@ -44,7 +46,7 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 		// 对每条染色体进行邻域选择
 		// 如果邻域解更优，则保留，否则一定概率接收
 		// 如果本就无解，则适度函数无穷大，设为一个很大的值
-		for (auto gene: genes) {
+		for (auto &gene: genes) {
 			if (gene.none()) continue; // 空染色体不进行领域操作
 			std::vector<int> currentServerLinkedIds = gene.get_server_linked_ids();
 			printf("\n  该染色体当前服务器节点如下：");
@@ -53,11 +55,11 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 			}
 			// 记录该染色体的费用
 			int currentCost = minCostFlow.min_cost(currentServerLinkedIds);
-			system("pause");
+
 			// 开始计算邻域
 			// 任意选择服务器中的一个，并任意选择其相邻节点中的一个节点
 			// 从currentMinCostFlow中找到			
-			int index = random.random_int(0, currentServerLinkedIds.size()-1);
+			int index = Random::random_int(0, currentServerLinkedIds.size()-1);
 			// 依靠minCostFlow中的拓扑结构，任意挑选该服务器点周围的一个点作为新的服务器点，原服务器点舍弃
 			// 注意不要选到超级源点和超级汇点
 			int newServerId = -1;
@@ -70,21 +72,22 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 			newServerLinkedIds[index] = newServerId;
 
 			// 概率性的随机增加任意节点为服务器节点
-			if (random.random_double(0, 1) < poi) {
-				newServerLinkedIds.push_back(random.random_int(0, minCostFlow.get_net_node_num()));
+			if (Random::random_double(0, 1) < poi) {
+				newServerLinkedIds.push_back(Random::random_int(0, minCostFlow.get_net_node_num()));
 			}
-			printf("\n  该染色体邻域服务器节点如下：");
-			for (auto newServerLinkedId : newServerLinkedIds) {
-				printf("%d ", newServerLinkedId);
-			}
+			//printf("\n  该染色体邻域服务器节点如下：");
+			//for (auto newserverlinkedid : newServerLinkedIds) {
+			//	printf("%d ", newserverlinkedid);
+			//}
 			// 计算邻域完毕！
 			int newCost = minCostFlow.min_cost(newServerLinkedIds);
 
 			if (newCost != -1) {
 				// 领域有解，则概率性接收
 				int dE = newCost - currentCost;
-				if (currentCost == -1 || std::min<double>(1, exp(-dE / T)) > random.random_double(0, 1)) {
+				if (currentCost == -1 || std::min<double>(1, exp(-dE / T)) > Random::random_double(0, 1)) {
 					gene.set(newServerLinkedIds);
+					// std::cout << "set_fitness(" << newCost << ")" << std::endl;
 					gene.set_fitness(newCost);
 					// 判断是否当前最优
 					if (bestCost > newCost) {
@@ -105,23 +108,28 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 					bestCost = currentCost;
 					bestServerLinkedIds = currentServerLinkedIds;
 				}
-				gene.set_fitness(currentCost == -1? INT_MAX : currentCost);
+				// 若当前域有解，则为当前费用
+				// 若当前域无解，则用服务器全部放置在消费节点时的费用
+				gene.set_fitness(currentCost == -1? minCostFlow.get_consumer_node_num() * minCostFlow.get_server_cost() : currentCost);
 			}
 			
 		}
-
 		// 进一步计算适应度
+		printf("\n计算适应度\n");
 		double sum = 0;
 		if (bestCost == INT_MAX) bestCost = 0;
-		for (auto gene: genes) {
+		for (auto &gene: genes) {
 			double dE = gene.get_fitness() - bestCost;
 			gene.set_fitness(exp(-dE / T)); // 费用越多，则被选择概率越小
+			printf("%f ", dE);
 			sum += gene.get_fitness();
 		}
 
 		// 计算选择概率
-		for (auto gene: genes) {
+		printf("\n计算概率\n");
+		for (auto &gene: genes) {
 			gene.set_p(gene.get_fitness() / sum);
+			printf("%f ", gene.get_p());
 		}
 
 		// 轮盘赌选择，生成下一代
@@ -136,14 +144,14 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 
 		// 交叉，开始
 		for (int i = 0; i < geneNum;i+=2) {
-			if (random.random_double(0, 1) < crossP) {
+			if (Random::random_double(0, 1) < crossP) {
 				genes[i] * genes[i + 1];
 			}
 		}
 
 		// 变异，开始
-		for (auto gene: genes) {
-			if (random.random_double(0, 1) < mutation) {
+		for (auto &gene: genes) {
+			if (Random::random_double(0, 1) < mutation) {
 				gene.mutation();
 			}
 		}
@@ -153,7 +161,7 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 		if (bestCost != 0) minCost = std::min(minCost, bestCost);
 		T *= delta;
 		++iterationCnt;
-		printf("\niterationCnt: %d, minCost: %d/%d\n\n", iterationCnt, minCostFlow.get_consumer_node_num() * minCostFlow.get_server_cost());
+		printf("\niterationCnt: %d, bestCost: %d, minCost: %d/%d\n\n", iterationCnt, bestCost, minCost, minCostFlow.get_consumer_node_num() * minCostFlow.get_server_cost());
 	}
 	printf("遗传退火算法结束：T=%lf iterationCnt=%d\n", T, iterationCnt);
 }

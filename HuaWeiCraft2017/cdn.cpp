@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 	int in_line_num;
 
 	//char *topo_file = argv[1];
-	char *topo_file = "./case_example/第一批练习用例/case0.txt";
+	char *topo_file = "./case_example/第一批练习用例/case2.txt";
 
 	in_line_num = read_file(topo, MAX_IN_NUM, topo_file);
 

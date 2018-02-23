@@ -5,7 +5,6 @@
 #include <bitset>
 
 class SAA {
-	Random random;
 	double k = 0.1;
 	double r = 0.9; // 用于控制降温的快慢
 	double tInit = 2000; // 系统的温度，系统初始应该要处于一个高温的状态

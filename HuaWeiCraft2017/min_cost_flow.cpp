@@ -29,7 +29,7 @@ std::vector<int> MinCostFlow::selectAdjacent(int u) {
 
 int MinCostFlow::selectRandAdjacent(int u) {
 	std::vector<int> adjacentIds = selectAdjacent(u);
-	return adjacentIds[random.random_int(0, adjacentIds.size()-1)];
+	return adjacentIds[Random::random_int(0, adjacentIds.size()-1)];
 }
 
 void MinCostFlow::insert_edge(int u, int v, int vol, int cost) {
@@ -108,30 +108,15 @@ int MinCostFlow::min_cost(const std::vector<int> &serverLinkIds) {
 		gOriginEdges = gEdges;
 	}
 	if (!this->serverLinkIds.empty()) {
-		printf("reset graph\n");
 		// 先删除掉超级源点对应的边
 		// 注意，在构建拓扑图的时候，一定是在最后添加超级源点边，是为了方便删除
 		delete_super_source();
-		printf("reset graph finished\n");
 	}
-	printf("gEdgeCount=%d", gEdgeCount);
-	printf("gEdges.size()=%d", gEdges.size());
-	printf("gHead[51]=%d",gHead[51]);
-	//if (this->serverLinkIds.empty()) {
-	//	for (auto serverLinkId: serverLinkIds) {
-	//		printf("gHead[%d]=%d ", serverLinkId,gHead[serverLinkId]);
-	//	}
-	//}
-	//else {
-	//	for (auto serverLinkId : this->serverLinkIds) {
-	//		printf("gHead[%d]=%d ", serverLinkId, gHead[serverLinkId]);
-	//	}
-	//}
 
 	this->serverLinkIds = serverLinkIds;
 	insert_server(serverLinkIds);
 	std::pair<int, int> cost_flow = min_cost_flow();
-	printf("cost=%d,flow=%d,demandSum=%d", cost_flow.first, cost_flow.second, demandSum);
+	//printf("cost=%d,flow=%d,demandSum=%d", cost_flow.first, cost_flow.second, demandSum);
 	if (cost_flow.second < demandSum) { // 最大流不满足需求
 		return -1;
 	}
