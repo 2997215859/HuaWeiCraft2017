@@ -18,6 +18,7 @@ class MinCostFlow {
 
 	int demandSum;
 
+	std::vector<Edge> gOriginEdges;
 	std::vector<Edge> gEdges;
 
 	std::vector<int> gHead;

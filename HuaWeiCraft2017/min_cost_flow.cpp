@@ -48,7 +48,9 @@ void MinCostFlow::delete_super_source() {
 		gHead[gEdges.back().from] = gEdges.back().next;
 		gEdges.pop_back();
 	}
-	gEdgeCount -= delete_num; // 并恢复链路计数为加入超级源点之前的链路急速
+	gEdgeCount -= delete_num; // 并恢复链路计数为加入超级源点之前的链路计数
+	// 此时，gEdges与gOriginEdges只有vol不一样了，重新赋值即可
+	gEdges = gOriginEdges;
 }
 
 bool MinCostFlow::spfa(int s, int t) {
@@ -102,12 +104,30 @@ std::pair<int, int> MinCostFlow::min_cost_flow() {
 }
 
 int MinCostFlow::min_cost(const std::vector<int> &serverLinkIds) {
+	if (this->serverLinkIds.empty()) { // 第一次跑费用流，保存不包含超级源点的边的gEdges;
+		gOriginEdges = gEdges;
+	}
 	if (!this->serverLinkIds.empty()) {
 		printf("reset graph\n");
 		// 先删除掉超级源点对应的边
 		// 注意，在构建拓扑图的时候，一定是在最后添加超级源点边，是为了方便删除
 		delete_super_source();
+		printf("reset graph finished\n");
 	}
+	printf("gEdgeCount=%d", gEdgeCount);
+	printf("gEdges.size()=%d", gEdges.size());
+	printf("gHead[51]=%d",gHead[51]);
+	//if (this->serverLinkIds.empty()) {
+	//	for (auto serverLinkId: serverLinkIds) {
+	//		printf("gHead[%d]=%d ", serverLinkId,gHead[serverLinkId]);
+	//	}
+	//}
+	//else {
+	//	for (auto serverLinkId : this->serverLinkIds) {
+	//		printf("gHead[%d]=%d ", serverLinkId, gHead[serverLinkId]);
+	//	}
+	//}
+
 	this->serverLinkIds = serverLinkIds;
 	insert_server(serverLinkIds);
 	std::pair<int, int> cost_flow = min_cost_flow();
