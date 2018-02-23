@@ -28,7 +28,7 @@ std::vector<int> MinCostFlow::selectAdjacent(int u) {
 
 int MinCostFlow::selectRandAdjacent(int u) {
 	std::vector<int> adjacentIds = selectAdjacent(u);
-	return adjacentIds[Random::rnd(0, adjacentIds.size()-1)];
+	return adjacentIds[random.random_int(0, adjacentIds.size()-1)];
 }
 
 void MinCostFlow::insert_edge(int u, int v, int vol, int cost) {
@@ -74,6 +74,10 @@ bool MinCostFlow::spfa(int s, int t) {
 		}
 		return true;
 	}
+
+	if (gPre[t] == -1)  //若终点t没有设置pre，说明不存在到达终点t的路径
+		return false;
+	return true;
 }
 
 int MinCostFlow::min_cost_flow(int s, int t) {
@@ -106,7 +110,7 @@ int MinCostFlow::min_cost(const std::vector<int> &serverLinkIds) {
 		// 注意，在构建拓扑图的时候，一定是在最后添加超级源点边，是为了方便删除
 		delete_super_source();
 	}
-	serverLinkIds = serverLinkIds;
+	this->serverLinkIds = serverLinkIds;
 	insert_server(serverLinkIds);
 	return min_cost_flow() + serverCost;
 }

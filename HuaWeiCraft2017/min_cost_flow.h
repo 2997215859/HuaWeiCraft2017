@@ -5,10 +5,11 @@
 
 #include "edge.h"
 #include "gene.h"
+#include "random.h"
 #include <vector>
 
 class MinCostFlow {
-	
+	Random random;
 	int netNodeNum;
 	int netEdgeNum;
 	int consumerNodeNum;

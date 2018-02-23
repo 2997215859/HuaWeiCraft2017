@@ -27,6 +27,15 @@
     <ClCompile Include="min_cost_flow.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="saa.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="gene.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="random.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="deploy.h">
@@ -42,6 +51,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="edge.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="saa.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="gene.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="random.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

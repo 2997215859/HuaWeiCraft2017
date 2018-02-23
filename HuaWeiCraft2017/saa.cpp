@@ -8,9 +8,9 @@ double SAA::rnd(double dbLow, double dbUpper){
 	return dbLow + dbTemp*(dbUpper - dbLow);
 }
 int SAA::select(const std::vector<Gene> &genes) {
-	double r = Random::random_double(0, 1);
+	double r = Random().random_double(0, 1);
 	double s = 0;
-	for (int i = 0; i < genes.size();i++) {
+	for (size_t i = 0; i < genes.size();i++) {
 		s += genes[i].get_p();
 		if (s >= r) {
 			return i;
@@ -47,7 +47,7 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 			// 开始计算邻域
 			// 任意选择服务器中的一个，并任意选择其相邻节点中的一个节点
 			// 从currentMinCostFlow中找到			
-			int index = Random::rnd(0, currentServerLinkedIds.size()-1);
+			int index = random.random_int(0, currentServerLinkedIds.size()-1);
 			// 依靠minCostFlow中的拓扑结构，任意挑选该服务器点周围的一个点作为新的服务器点，原服务器点舍弃
 			int newServerId = minCostFlow.selectRandAdjacent(currentServerLinkedIds[index]);
 			
@@ -56,8 +56,8 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 			newServerLinkedIds[index] = newServerId;
 
 			// 概率性的随机增加任意节点为服务器节点
-			if (Random::random_double(0, 1) < poi) {
-				newServerLinkedIds.push_back(Random::random_int(0, minCostFlow.get_net_node_num));
+			if (random.random_double(0, 1) < poi) {
+				newServerLinkedIds.push_back(random.random_int(0, minCostFlow.get_net_node_num()));
 			}
 			// 计算邻域完毕！
 			int newCost = minCostFlow.min_cost(newServerLinkedIds);
@@ -65,7 +65,7 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 			if (newCost != -1) {
 				// 领域有解，则概率性接收
 				int dE = newCost - currentCost;
-				if (currentCost == -1 || std::min<double>(1, exp(-dE / T)) > Random::random_double(0, 1)) {
+				if (currentCost == -1 || std::min<double>(1, exp(-dE / T)) > random.random_double(0, 1)) {
 					gene.set(newServerLinkedIds);
 					gene.set_fitness(newCost);
 					// 判断是否当前最优
@@ -118,14 +118,14 @@ void SAA::saa(MinCostFlow minCostFlow, std::vector<int> serverLinkedIds){
 
 		// 交叉，开始
 		for (int i = 0; i < geneNum;i+=2) {
-			if (Random::random_double(0, 1) < crossP) {
-				genes[i] * genes[i+1];
+			if (random.random_double(0, 1) < crossP) {
+				genes[i] * genes[i + 1];
 			}
 		}
 
 		// 变异，开始
 		for (auto gene: genes) {
-			if (Random::random_double(0, 1) < mutation) {
+			if (random.random_double(0, 1) < mutation) {
 				gene.mutation();
 			}
 		}
