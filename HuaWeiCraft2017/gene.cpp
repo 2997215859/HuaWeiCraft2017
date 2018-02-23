@@ -11,7 +11,7 @@ Gene::Gene(int len, std::vector<int> serverLinkedIds) {
 }
 void Gene::randomInit() {
 	for (int i = 0; i < len; i++) {
-		code[i] = random.random_int(0, 1);
+		code[i] = Random::random_int(0, 1);
 	}
 }
 void Gene::randomInit(int len) {
@@ -19,8 +19,8 @@ void Gene::randomInit(int len) {
 	Gene::randomInit();
 }
 void Gene::operator*(Gene &b) { // 交叉，同时改变2条染色体
-	int end = random.random_int(1, len); // 交换的位置，交换一边就行了，因为另一边不动，这里交换两边
-	int begin = random.random_int(0, end - 1);
+	int end = Random::random_int(1, len); // 交换的位置，交换一边就行了，因为另一边不动，这里交换两边
+	int begin = Random::random_int(0, end - 1);
 	// printf("begin = %d end = %d len = %d\n", begin, end, len);
 	for (int i = begin; i < end; ++i)
 		if (code[i] != b.code[i]) {
@@ -44,7 +44,7 @@ bool Gene::operator==(const Gene &b) const { // 判断序列是否相等
 }
 
 void Gene::mutation(int loc) { // 突变，[0, len)
-	if (loc == -1) loc = random.random_int(0, len - 1);
+	if (loc == -1) loc = Random::random_int(0, len - 1);
 	else if (loc >= len) return;
 	// printf("loc = %d\n", loc);
 	code[loc] = !code[loc];

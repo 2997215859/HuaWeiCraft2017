@@ -3,6 +3,7 @@
 #include "lib_time.h"
 #include "saa.h"
 #include "min_cost_flow.h"
+#include "random.h"
 #include <bitset>
 #include <cstdio>
 #include <cstdlib>
@@ -10,7 +11,7 @@
 #include <string>
 #include <regex>
 #include <iostream>
-
+std::default_random_engine Random::generator;
 void deploy_server(char* inLines[MAX_IN_NUM], int inLineNum, const char * const filename)
 {
 	/*

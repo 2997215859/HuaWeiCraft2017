@@ -7,7 +7,6 @@
 #include <vector>
 
 class Gene {
-	Random random;
 	int len;
 	std::bitset<10000 + 5> code;
 	double fitness; // ÊÊÓ¦¶È
