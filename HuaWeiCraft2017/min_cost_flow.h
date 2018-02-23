@@ -1,7 +1,6 @@
 #ifndef MIN_COST_FLOW_H
 #define MIN_COST_FLOW_H
-#define MAX_NODE_NUM 1005
-#define MAX_EDGE_NUM 40005
+
 
 #include "edge.h"
 #include "gene.h"
@@ -17,6 +16,8 @@ class MinCostFlow {
 
 	int gEdgeCount;
 
+	int demandSum;
+
 	std::vector<Edge> gEdges;
 
 	std::vector<int> gHead;
@@ -26,8 +27,8 @@ class MinCostFlow {
 
 	std::vector<int> serverLinkIds;
 
-	int min_cost_flow(int s, int t);
-	int min_cost_flow();
+	std::pair<int, int> min_cost_flow(int s, int t);
+	std::pair<int, int> min_cost_flow();
 
 	
 public:
@@ -38,8 +39,11 @@ public:
 	void delete_super_source();
 	bool spfa(int s, int t);
 	
+	inline void set_demand_sum(int demandSum) { this->demandSum = demandSum; }
+	inline int get_demand_sum() { return demandSum; }
 	inline int get_net_node_num() {return netNodeNum;}
 	inline int get_server_cost() { return serverCost; }
+	inline int get_consumer_node_num() { return consumerNodeNum; }
 	
 	int min_cost(const std::vector<int> &serverLinkIds); // 加上服务器之后的总共花费
 	int min_cost(Gene gene); // 传入gene

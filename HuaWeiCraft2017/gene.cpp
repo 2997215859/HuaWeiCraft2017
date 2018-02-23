@@ -6,7 +6,7 @@ Gene::Gene(int len) : len(len) {
 	randomInit();
 }
 Gene::Gene(int len, std::vector<int> serverLinkedIds) {
-	this->len = serverLinkedIds.size();
+	this->len = len;
 	Gene::set(serverLinkedIds);
 }
 void Gene::randomInit() {
