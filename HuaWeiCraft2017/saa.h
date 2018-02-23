@@ -13,6 +13,7 @@ public:
 	void saa(MinCostFlow minCostFlow, std::vector<int> serverLinkIds);
 	void saa(MinCostFlow minCostFlow, std::bitset<10000+5> serverLinkIds);
 	double rnd(double dbLow, double dbUpper);
+	int select(const std::vector<Gene>& genes);
 };
 
 #endif // !SAA_H

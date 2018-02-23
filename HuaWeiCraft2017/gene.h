@@ -8,9 +8,10 @@ class Gene {
 private:
 	int len;
 	std::bitset<10000 + 5> code;
-public:
 	double fitness; // 适应度
 	double p; // 选中概率
+public:
+	
 	
 	Gene(int len);
 	Gene(int len, std::vector<int> serverLinkedIds);
@@ -27,5 +28,9 @@ public:
 	inline bool none() { return code.none(); }
 	inline bool any() { return code.any(); }
 	inline std::vector<int> get_server_linked_ids() const;
+	inline void set_fitness(int f) { fitness = f; }
+	inline double get_fitness() { return fitness; }
+	inline void set_p(int p) { this->p = p; }
+	inline double get_p() const { return p; }
 };
 #endif // !GENE_H

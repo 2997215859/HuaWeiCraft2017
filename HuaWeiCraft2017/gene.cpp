@@ -6,7 +6,7 @@ Gene::Gene(int len) : len(len) {
 	randomInit();
 }
 Gene::Gene(int len, std::vector<int> serverLinkedIds) {
-	len = serverLinkedIds.size();
+	this->len = serverLinkedIds.size();
 	Gene::set(serverLinkedIds);
 }
 void Gene::randomInit() {
@@ -15,7 +15,7 @@ void Gene::randomInit() {
 	}
 }
 void Gene::randomInit(int len) {
-	len = len;
+	this->len = len;
 	Gene::randomInit();
 }
 void Gene::operator*(Gene &b) { // 交叉，同时改变2条染色体
