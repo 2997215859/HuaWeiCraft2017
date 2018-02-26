@@ -26,3 +26,11 @@
 ├─README                   % 你正在看的文件 -_-" 这不用介绍了吧
 ```
 
+## 参考文献和博客
+
+1. [2017华为软件精英挑战赛参赛心得](http://www.netcan666.com/2017/03/23/2017%E5%8D%8E%E4%B8%BA%E8%BD%AF%E4%BB%B6%E7%B2%BE%E8%8B%B1%E6%8C%91%E6%88%98%E8%B5%9B%E5%8F%82%E8%B5%9B%E5%BF%83%E5%BE%97/)
+2. [单源最短路径（3）：SPFA 算法](https://www.61mon.com/index.php/archives/196/)
+3. [2017华为软件精英挑战赛--总结](http://blog.csdn.net/zc20122690/article/details/69926375)
+4. [2017华为软件精英挑战赛初赛体验及最终代码](https://www.cnblogs.com/jhmu0613/p/6844133.html)
+5. [2017 华为软件精英挑战赛](http://blog.csdn.net/firenet1/article/details/63686904)
+6. [poj_2315 最小费用最大流](http://www.cnblogs.com/gtarcoder/p/4890746.html)
